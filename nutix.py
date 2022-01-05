@@ -21,7 +21,7 @@ df.drop(columns=df.columns[0], inplace=True)
 df.set_index('date', inplace=True)
 
 peanuts_r = np.array([df.peanut.values]).T
-# peanuts_r = df.values
+peanuts_r = df.values
 data_len = peanuts_r.shape[0]
 sc = MinMaxScaler(feature_range = (0, 1))
 peanuts = sc.fit_transform(peanuts_r)
@@ -35,11 +35,11 @@ for i in range(60, data_len):
 features = np.array(features)
 labels = np.array(labels)
 
-features = np.reshape(features, (features.shape[0], features.shape[1], 1))
+features = np.reshape(features, (features.shape[0], features.shape[1], 2))
 X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.27, shuffle=False)
 
 model = tf.keras.models.Sequential([
-    tf.keras.layers.LSTM(units = 25, return_sequences = True, input_shape = (features.shape[1], 1)),
+    tf.keras.layers.LSTM(units = 25, return_sequences = True, input_shape = (features.shape[1], 2)),
     tf.keras.layers.Dropout(0.2),
     tf.keras.layers.LSTM(units = 25, return_sequences = True),
     tf.keras.layers.Dropout(0.2),
@@ -54,10 +54,10 @@ history = model.fit(X_train, y_train, epochs = 3, batch_size = 16, verbose = 1)
 
 y_pred = model.predict(X_test)
 plt.figure(figsize=(10, 6))
-plt.plot(sc.inverse_transform(y_test.reshape(-1, 1)))
-plt.plot(sc.inverse_transform(y_pred))
+plt.plot(y_test)
+plt.plot(y_pred)
 plt.legend(("actual", "predicted"), loc="upper left")
 plt.xlabel("date")
 plt.ylabel("peanut price")
 print(mean_squared_error(y_test, y_pred))
-plt.savefig("lstm.png")
+plt.savefig("nutix.png")

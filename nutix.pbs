@@ -11,4 +11,4 @@ module load tensorflow-py37-cuda10.1-gcc
 
 
 cd ${PBS_O_WORKDIR}
-time ./nutix.py
+time ./lstm.py

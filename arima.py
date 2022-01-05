@@ -10,12 +10,14 @@ Original file is located at
 import matplotlib.pyplot as plt
 import pandas as pd
 import pmdarima as pm
-import numpy as np
+from sklearn.metrics import mean_squared_error
 
 df = pd.read_csv("commodities.csv")
 df['date'] = pd.to_datetime(df[df.columns[0]])
 df.drop(columns=df.columns[0], inplace=True)
 df.set_index('date', inplace=True)
+# sc = MinMaxScaler(feature_range = (0, 1))
+# df = pd.DataFrame(sc.fit_transform(df.values), index=df.index, columns=df.columns)
 
 timeseries = df["peanut"][0:8000]
 def arimamodel(timeseries):
@@ -41,7 +43,7 @@ def plotarima(n_periods, timeseries, automodel):
     plt.plot(timeseries)
     plt.plot(fc_series, color="red")
     plt.xlabel("date")
-    plt.ylabel(timeseries.name)
+    plt.ylabel("peanut price")
     plt.fill_between(lower_series.index, 
                      lower_series, 
                      upper_series, 
@@ -49,6 +51,7 @@ def plotarima(n_periods, timeseries, automodel):
     plt.plot(df.peanut[timeseries.shape[0]:timeseries.shape[0] + n_periods])
     plt.legend(("past", "forecast", "actual", "95% confidence interval"), loc="upper left")
     plt.savefig("arima.png")
+    print(mean_squared_error(df.peanut[timeseries.shape[0]:timeseries.shape[0] + n_periods].values, fc))
 
 automodel = arimamodel(timeseries)
 automodel.summary()
