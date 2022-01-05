@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
 from datetime import date, timedelta
-import numpy as np
+import matplotlib.pyplot as plt
 
 raw = pd.read_csv("peanuts.csv")
 pn = pd.DataFrame(columns=["price"], index=pd.to_datetime(raw.date), data=raw.price.values)
@@ -28,3 +28,8 @@ df['peanut'] = peanut
 df['oil'] = oil
 df.index = date
 df.to_csv("commodities.csv")
+ndf = (df-df.mean())/df.std()
+
+plt.plot(ndf.peanut)
+plt.plot(ndf.oil)
+plt.savefig("pricefig.png")

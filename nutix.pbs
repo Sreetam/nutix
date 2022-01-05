@@ -1,0 +1,14 @@
+#!/bin/sh
+#PBS -q biggpu
+#PBS -j oe
+#PBS -l ngpus=1
+#PBS -l mem=10gb
+#PBS -l ncpus=1
+#PBS -N tensorflow
+
+module load openmpi/cuda/64
+module load tensorflow-py37-cuda10.1-gcc
+
+
+cd ${PBS_O_WORKDIR}
+time ./nutix.py
